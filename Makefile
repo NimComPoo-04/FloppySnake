@@ -7,6 +7,13 @@ OBJ=$(patsubst %.c, %.o, $(SRC))
 LIB = -Llib/raylib-5.0_linux_amd64/lib -lraylib
 INC = -Ilib/raylib-5.0_linux_amd64/include
 
+RM = rm
+
+ifneq ($(OS), Windows_NT)
+LIB += -lm
+RM = del /Q
+endif
+
 EXE=floppysnake.exe
 
 all: $(EXE)
