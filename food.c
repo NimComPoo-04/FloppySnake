@@ -76,7 +76,7 @@ int food_draw(entity_t *e)
 	v.y = f->center.y * (1. - f->anim_t) + f->target.y * f->anim_t;
 
 	// Color interpolator
-	Color k = {0, 0, 0, 255};	
+	Color k = {0, 0, 0, 10};	
 	k.r = f->start.r * (1. - f->anim_t) + f->end.r * f->anim_t;
 	k.g = f->start.g * (1. - f->anim_t) + f->end.g * f->anim_t;
 	k.b = f->start.b * (1. - f->anim_t) + f->end.b * f->anim_t;

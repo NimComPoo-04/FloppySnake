@@ -1,12 +1,24 @@
 #include <raylib.h>
 
 #include "entity.h"
+#include "snake.h"
 #include "food.h"
 
 #define ASPECT_RATIO 9 / 16
 
 #define FOOD_COUNT 40
 static food_t f[FOOD_COUNT] = {0};
+
+snake_t snake = {
+	.entity = {
+		.init = snake_init,
+		.update = snake_update,
+		.draw = snake_draw
+	},
+	.velocity = 1000,
+	.head = 0,
+	.tail = 0 
+};
 
 int main(void)
 {
@@ -25,6 +37,8 @@ int main(void)
 
 		entity_list_register(&ent, &f[i].entity);
 	}
+
+	entity_list_register(&ent, &snake.entity);
 
 	float t = 0;
 	Color current = {0};
