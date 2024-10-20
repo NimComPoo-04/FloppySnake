@@ -8,13 +8,6 @@ int food_init(entity_t *e)
 {
 	food_t *f = (food_t *)e;
 
-	// Setting up the bounding box
-	e->bounding_box = (Rectangle){
-		f->center.x - f->radius, 
-		f->center.y - f->radius, 
-		f->radius * 2, f->radius * 2
-	};
-
 	// Setting up the positional arguments
 	int w = GetScreenWidth();
 	int h = GetScreenHeight();
@@ -38,9 +31,6 @@ int food_init(entity_t *e)
 int food_update(entity_t *e)
 {
 	food_t *f = (food_t *)e;
-
-	e->bounding_box.x = f->center.x - f->radius;
-	e->bounding_box.y = f->center.y - f->radius;
 
 	if(f->anim_t <= 1.)
 	{

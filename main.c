@@ -1,5 +1,11 @@
 #include <raylib.h>
 
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
+
+#include "scratch_space.h"
+
 #include "entity.h"
 #include "snake.h"
 #include "food.h"
@@ -15,14 +21,23 @@ snake_t snake = {
 		.update = snake_update,
 		.draw = snake_draw
 	},
-	.velocity = 1000,
+	.velocity = 800,
 	.head = 0,
 	.tail = 0 
 };
 
+/*
+void fe(int id, void *d)
+{
+	char *k = d;
+	printf("%d : %s\n", id, k);
+}
+*/
+
 int main(void)
 {
 	entity_list_t ent = {0};
+	entity_list_create(&ent);
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
 	InitWindow(0, 0, "...");
@@ -69,10 +84,41 @@ int main(void)
 		entity_list_update(&ent);
 		entity_list_draw(&ent);
 
+		DrawFPS(0, 0);
 		EndDrawing();
 	}
 
 	CloseWindow();
+
+	/*
+	scratch_space_t s;
+	
+	char names[50];
+	scratch_space_create(&s, 256, 50);
+
+	strcpy(names, "hello");
+	scratch_space_allocate(&s, names);
+	strcpy(names, "funny");
+	scratch_space_allocate(&s, names);
+	strcpy(names, "you are");
+	scratch_space_allocate(&s, names);
+	strcpy(names, "not dawg");
+	scratch_space_allocate(&s, names);
+
+	assert(scratch_space_deallocate(&s, 0, 3));
+
+	strcpy(names, "something");
+	scratch_space_allocate(&s, names);
+
+	strcpy(names, "djfks");
+	scratch_space_allocate(&s, names);
+
+	assert(scratch_space_deallocate(&s, 0, 4));
+
+	scratch_space_foreach(&s, fe);
+	*/
+
+	entity_list_destroy(&ent);
 
 	return 0;
 }

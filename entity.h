@@ -3,15 +3,12 @@
 
 #include <raylib.h>
 
-#define MAX_ENT 50
+#include "scratch_space.h"
 
 // Interface which every entity has to implement.
 typedef struct entity_t
 {
-	int id;
 	int alive;
-
-	Rectangle bounding_box;
 
 	int (*init)(struct entity_t *e);
 	int (*update)(struct entity_t *e);
@@ -22,19 +19,16 @@ typedef struct entity_t
 // Entity List which allows systems to exist
 typedef struct entity_list_t
 {
-	entity_t *entities[MAX_ENT];
-	int entities_len;
-
-	int freelist[MAX_ENT];
-	int list_len;
+	scratch_space_t entities;
 } entity_list_t;
 
+int entity_list_create(entity_list_t *e);
+void entity_list_destroy(entity_list_t *e);
+
 int entity_list_register(entity_list_t *e, entity_t *x);
-entity_t *entity_list_remove(entity_list_t *e, int);
+entity_t *entity_list_remove(entity_list_t *e, int pos);
 
 void entity_list_update(entity_list_t *e);
 void entity_list_draw(entity_list_t *e);
-
-void entity_dump(entity_list_t *e);
 
 #endif
