@@ -26,7 +26,7 @@ static void ini(int id, void *v)
 
 int particles_list_create(particles_list_t *p, Vector2 *origin)
 {
-	scratch_space_create(p, 50, sizeof(particles_t));
+	scratch_space_create(p, 100, sizeof(particles_t));
 
 	particles_t pe = {0};
 	pe.origin = origin;

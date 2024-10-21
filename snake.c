@@ -42,7 +42,7 @@ int snake_draw(entity_t *e)
 		k.x -= v.x / rad;
 		k.y -= v.y / rad;
 
-		DrawLineEx(k, n->position, n->radius, RED);                   // Draw line segment cubic-bezier in-out interpolation
+		DrawLineEx(k, n->position, n->radius, RED);
 
 		old = n;
 		n = n->next;

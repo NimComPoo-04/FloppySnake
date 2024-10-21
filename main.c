@@ -89,7 +89,7 @@ int main(void)
 		entity_list_draw(&ent);
 		particle_list_draw(&p);
 
-		DrawFPS(0, 0);
+		DrawFPS(snake.head->position.x, snake.head->position.y);
 		EndMode2D();
 		EndDrawing();
 
