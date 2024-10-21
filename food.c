@@ -3,7 +3,6 @@
 
 #include "food.h"
 
-
 int food_init(entity_t *e)
 {
 	food_t *f = (food_t *)e;

@@ -1,7 +1,7 @@
-#include "snake.h"
-
 #include <raylib.h>
 #include <math.h>
+
+#include "snake.h"
 
 #define SNAKE_NODES 20
 static snake_node_t snake_nodes[SNAKE_NODES] = {0};
@@ -16,7 +16,7 @@ int snake_init(entity_t *e)
 	for(int i = 1; i < SNAKE_NODES; i++, n = n->next)
 	{
 		n->next = snake_nodes + i;
-		n->radius = 30;
+		n->radius = 30 - i;
 		n->position.x = GetRandomValue(0, GetScreenWidth());
 		n->position.y = GetRandomValue(0, GetScreenHeight());
 	}
@@ -43,6 +43,7 @@ int snake_draw(entity_t *e)
 		k.y -= v.y / rad;
 
 		DrawLineEx(k, n->position, n->radius, RED);                   // Draw line segment cubic-bezier in-out interpolation
+
 		old = n;
 		n = n->next;
 	}
@@ -58,26 +59,17 @@ int snake_update(entity_t *e)
 
 	float dt = GetFrameTime();
 
-	Vector2 other;
-	other.x = GetMouseX();
-	other.y = GetMouseY();
+	const int w = GetScreenWidth();
+	const int h = GetScreenHeight();
 
-	float len = hypot(s->oldmouse.x - other.x, s->oldmouse.y - other.y);
+	const int x = GetMouseX() - w/2;
+	const int y = GetMouseY() - h/2;
 
-	if(len < n->radius)
-	{
-		other.x = n->position.x + s->veldir.x;
-		other.y = n->position.y + s->veldir.y;
-	}
-	else
-	{
-		len = hypot((other.x - n->position.x), (other.y - n->position.y));
+	float len = hypot(x, y);
 
-		s->veldir.x = (other.x - n->position.x) / len * s->velocity;
-		s->veldir.y = (other.y - n->position.y) / len * s->velocity;
-
-		s->oldmouse = other;
-	}
+	Vector2 other = n->position;
+	other.x += s->velocity * x / len;
+	other.y += s->velocity * y / len;
 
 	while(n)
 	{

@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "scratch_space.h"
+#include "particles.h"
 
 #include "entity.h"
 #include "snake.h"
@@ -21,18 +22,12 @@ snake_t snake = {
 		.update = snake_update,
 		.draw = snake_draw
 	},
-	.velocity = 800,
+	.velocity = 1000,
 	.head = 0,
 	.tail = 0 
 };
 
-/*
-void fe(int id, void *d)
-{
-	char *k = d;
-	printf("%d : %s\n", id, k);
-}
-*/
+particles_list_t p = {0};
 
 int main(void)
 {
@@ -61,9 +56,19 @@ int main(void)
 	Color from = {0};
 	Color target = {0};
 
+	Camera2D camera = {
+		{0, 0},
+		{0, 0},
+		0,
+		1.0f
+	};
+
+	particles_list_create(&p, &snake.head->position);
+
 	while(!WindowShouldClose())
 	{
 		BeginDrawing();
+		BeginMode2D(camera);
 
 		current.r = from.r * (1 - t) + target.r * t;
 		current.g = from.g * (1 - t) + target.g * t;
@@ -81,44 +86,29 @@ int main(void)
 			t = 0;
 		}
 
-		entity_list_update(&ent);
 		entity_list_draw(&ent);
+		particle_list_draw(&p);
 
 		DrawFPS(0, 0);
+		EndMode2D();
 		EndDrawing();
+
+		entity_list_update(&ent);
+		particle_list_update(&p);
+
+		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+			camera.zoom = 0.5f;
+		else
+			camera.zoom = 1.0f;
+
+		camera.offset.x = -snake.head->position.x * camera.zoom + GetScreenWidth()/2;
+		camera.offset.y = -snake.head->position.y * camera.zoom + GetScreenHeight()/2 ;
 	}
 
 	CloseWindow();
 
-	/*
-	scratch_space_t s;
-	
-	char names[50];
-	scratch_space_create(&s, 256, 50);
-
-	strcpy(names, "hello");
-	scratch_space_allocate(&s, names);
-	strcpy(names, "funny");
-	scratch_space_allocate(&s, names);
-	strcpy(names, "you are");
-	scratch_space_allocate(&s, names);
-	strcpy(names, "not dawg");
-	scratch_space_allocate(&s, names);
-
-	assert(scratch_space_deallocate(&s, 0, 3));
-
-	strcpy(names, "something");
-	scratch_space_allocate(&s, names);
-
-	strcpy(names, "djfks");
-	scratch_space_allocate(&s, names);
-
-	assert(scratch_space_deallocate(&s, 0, 4));
-
-	scratch_space_foreach(&s, fe);
-	*/
-
 	entity_list_destroy(&ent);
+	particles_list_destroy(&p);
 
 	return 0;
 }
