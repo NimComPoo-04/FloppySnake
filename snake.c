@@ -1,7 +1,7 @@
 #include "snake.h"
 
 #include <raylib.h>
-#include <raymath.h>
+#include <math.h>
 
 #define SNAKE_NODES 20
 static snake_node_t snake_nodes[SNAKE_NODES] = {0};
