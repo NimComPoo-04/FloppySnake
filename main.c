@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "scratch_space.h"
+#include "particles.h"
 
 #include "entity.h"
 #include "snake.h"
@@ -25,6 +26,8 @@ snake_t snake = {
 	.head = 0,
 	.tail = 0 
 };
+
+particles_list_t p = {0};
 
 int main(void)
 {
@@ -60,6 +63,8 @@ int main(void)
 		1.0f
 	};
 
+	particles_list_create(&p, &snake.head->position);
+
 	while(!WindowShouldClose())
 	{
 		BeginDrawing();
@@ -82,12 +87,14 @@ int main(void)
 		}
 
 		entity_list_draw(&ent);
+		particle_list_draw(&p);
 
 		DrawFPS(0, 0);
 		EndMode2D();
 		EndDrawing();
 
 		entity_list_update(&ent);
+		particle_list_update(&p);
 
 		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 			camera.zoom = 0.5f;
@@ -101,6 +108,7 @@ int main(void)
 	CloseWindow();
 
 	entity_list_destroy(&ent);
+	particles_list_destroy(&p);
 
 	return 0;
 }
