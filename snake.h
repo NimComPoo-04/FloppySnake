@@ -16,8 +16,6 @@ typedef struct
 	entity_t entity;
 
 	float velocity;
-	Vector2 veldir;
-	Vector2 oldmouse;
 
 	snake_node_t *head;
 	snake_node_t *tail;
