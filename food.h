@@ -3,6 +3,12 @@
 
 #include "entity.h"
 
+// Position
+// Color
+// Opacity
+// Random Movement
+// Mass -> score
+
 typedef struct
 {
 	entity_t entity;

@@ -15,7 +15,6 @@ typedef struct
 	entity_t entity;
 
 	float velocity;
-
 	float radius;			// the head radius
 
 	array_t body;

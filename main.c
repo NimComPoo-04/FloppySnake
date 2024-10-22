@@ -37,6 +37,7 @@ int main(void)
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
 	InitWindow(0, 0, "...");
+	InitAudioDevice();
 
 	for(int i = 0; i < FOOD_COUNT; i++)
 	{
@@ -66,6 +67,9 @@ int main(void)
 
 	Vector2 particle_position = ((snake_node_t *)snake.body.data)->position; 
 	particles_list_create(&p, &particle_position);
+
+	Sound muse = LoadSound("kev.mp3");
+	PlaySound(muse);
 
 	while(!WindowShouldClose())
 	{
@@ -108,6 +112,8 @@ int main(void)
 		camera.offset.y = -((snake_node_t *)snake.body.data)->position.y * camera.zoom + GetScreenHeight()/2 ;
 	}
 
+	UnloadSound(muse);
+	CloseAudioDevice();
 	CloseWindow();
 
 	entity_list_destroy(&ent);

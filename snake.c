@@ -22,19 +22,29 @@ int snake_draw(entity_t *e)
 	snake_node_t *n = (snake_node_t *)s->body.data;
 	snake_node_t *old = n;
 
-	float rad = s->radius * 0.1;
+	// float rad = s->radius * 0.1;
+	
+	Color start = RED;
+	Color end = BLUE;
 
 	float t = 1;
 	for(int i = 1; i < s->body.length; i++)
 	{
 		n++;
-		Vector2 v = {old->position.x - n->position.x, old->position.y - n->position.y};
+		// Vector2 v = {old->position.x - n->position.x, old->position.y - n->position.y};
 
-		Vector2 k = old->position;
-		k.x -= v.x / rad;
-		k.y -= v.y / rad;
+	//	Vector2 k = old->position;
+	//	k.x -= v.x / rad;
+	//	k.y -= v.y / rad;
 
-		DrawLineEx(k, n->position, s->radius * t, RED);
+		Color current = {0};
+
+		current.r = start.r * (1 - t) + end.r * t;
+		current.g = start.g * (1 - t) + end.g * t;
+		current.b = start.b * (1 - t) + end.b * t;
+		current.a = 255;
+
+		DrawLineBezier(old->position, n->position, s->radius * t, current);
 		t -= 1./s->body.length;
 
 		old = n;
@@ -49,6 +59,11 @@ int snake_draw(entity_t *e)
 int snake_update(entity_t *e)
 {
 	snake_t *s = (snake_t *)e;
+
+	// EATING CODE
+	// ....
+	// ....
+	//
 
 	static int not_added = 1;
 	if(IsKeyDown(KEY_SPACE) && not_added)
