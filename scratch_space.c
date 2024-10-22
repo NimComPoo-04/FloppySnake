@@ -19,6 +19,8 @@ int scratch_space_create(scratch_space_t *s, int initial_size, int es)
 
 static inline void *get(scratch_space_t *s, int a)
 {
+	if(a == -1)
+		return NULL;
 	return (s->array.data + a * s->array.element_size);
 }
 
@@ -48,8 +50,11 @@ int scratch_space_allocate(scratch_space_t *s, void *d)
 		int t = s->array.length - 1;
 		next_node_t *k = get(s, t);
 
-		next_node_t *g = get(s, s->alloclist);
-		g->prev = t;
+		if(s->alloclist > 0)
+		{
+			next_node_t *g = get(s, s->alloclist);
+			g->prev = t;
+		}
 
 		k->next = s->alloclist;
 		k->prev = -1;

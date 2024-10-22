@@ -19,19 +19,20 @@ static food_t f[FOOD_COUNT] = {0};
 snake_t snake = {
 	.entity = {
 		.init = snake_init,
+		.dinit = snake_dinit,
 		.update = snake_update,
 		.draw = snake_draw
 	},
 	.velocity = 1000,
-	.head = 0,
-	.tail = 0 
+	.radius = 50
 };
 
 particles_list_t p = {0};
 
+entity_list_t ent = {0};
+
 int main(void)
 {
-	entity_list_t ent = {0};
 	entity_list_create(&ent);
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
@@ -63,7 +64,8 @@ int main(void)
 		1.0f
 	};
 
-	particles_list_create(&p, &snake.head->position);
+	Vector2 particle_position = ((snake_node_t *)snake.body.data)->position; 
+	particles_list_create(&p, &particle_position);
 
 	while(!WindowShouldClose())
 	{
@@ -89,11 +91,12 @@ int main(void)
 		entity_list_draw(&ent);
 		particle_list_draw(&p);
 
-		DrawFPS(snake.head->position.x, snake.head->position.y);
+		DrawFPS(((snake_node_t *)snake.body.data)->position.x, ((snake_node_t *)snake.body.data)->position.y);
 		EndMode2D();
 		EndDrawing();
 
 		entity_list_update(&ent);
+		particle_position = ((snake_node_t *)snake.body.data)->position; 
 		particle_list_update(&p);
 
 		if(IsMouseButtonDown(MOUSE_LEFT_BUTTON))
@@ -101,8 +104,8 @@ int main(void)
 		else
 			camera.zoom = 1.0f;
 
-		camera.offset.x = -snake.head->position.x * camera.zoom + GetScreenWidth()/2;
-		camera.offset.y = -snake.head->position.y * camera.zoom + GetScreenHeight()/2 ;
+		camera.offset.x = -((snake_node_t *)snake.body.data)->position.x * camera.zoom + GetScreenWidth()/2;
+		camera.offset.y = -((snake_node_t *)snake.body.data)->position.y * camera.zoom + GetScreenHeight()/2 ;
 	}
 
 	CloseWindow();

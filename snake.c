@@ -3,23 +3,14 @@
 
 #include "snake.h"
 
-#define SNAKE_NODES 20
-static snake_node_t snake_nodes[SNAKE_NODES] = {0};
-
 int snake_init(entity_t *e)
 {
 	snake_t *s = (snake_t *)e;
-	
-	s->head = snake_nodes;
-	snake_node_t *n = s->head;
 
-	for(int i = 1; i < SNAKE_NODES; i++, n = n->next)
-	{
-		n->next = snake_nodes + i;
-		n->radius = 30 - i;
-		n->position.x = GetRandomValue(0, GetScreenWidth());
-		n->position.y = GetRandomValue(0, GetScreenHeight());
-	}
+	snake_node_t head = {0};
+	
+	array_create(&s->body, 100, sizeof(snake_node_t));
+	array_insert(&s->body, &head);
 
 	return 0;
 }
@@ -28,25 +19,29 @@ int snake_draw(entity_t *e)
 {
 	snake_t *s = (snake_t *)e;
 
-	snake_node_t *n = s->head;
+	snake_node_t *n = (snake_node_t *)s->body.data;
 	snake_node_t *old = n;
-	n = n->next;
 
-	float rad = n->radius * 0.1;
+	float rad = s->radius * 0.1;
 
-	while(n)
+	float t = 1;
+	for(int i = 1; i < s->body.length; i++)
 	{
+		n++;
 		Vector2 v = {old->position.x - n->position.x, old->position.y - n->position.y};
 
 		Vector2 k = old->position;
 		k.x -= v.x / rad;
 		k.y -= v.y / rad;
 
-		DrawLineEx(k, n->position, n->radius, RED);
+		DrawLineEx(k, n->position, s->radius * t, RED);
+		t -= 1./s->body.length;
 
 		old = n;
-		n = n->next;
 	}
+
+	n = (snake_node_t *)s->body.data;
+	DrawCircleV(n->position, s->radius * 0.7, PURPLE);
 
 	return 0;
 }
@@ -55,7 +50,19 @@ int snake_update(entity_t *e)
 {
 	snake_t *s = (snake_t *)e;
 
-	snake_node_t *n = s->head;
+	static int not_added = 1;
+	if(IsKeyDown(KEY_SPACE) && not_added)
+	{
+		snake_node_t tmp = *((snake_node_t *)s->body.data + s->body.length - 1);
+		array_insert(&s->body, &tmp);
+		not_added = 0;
+	}
+	else if(IsKeyUp(KEY_SPACE))
+	{
+		not_added = 1;
+	}
+
+	snake_node_t *n = (snake_node_t *)s->body.data;
 
 	float dt = GetFrameTime();
 
@@ -71,20 +78,29 @@ int snake_update(entity_t *e)
 	other.x += s->velocity * x / len;
 	other.y += s->velocity * y / len;
 
-	while(n)
+	float t = 1;
+	for(int i = 0; i < s->body.length; i++)
 	{
 		len = hypot((other.x - n->position.x), (other.y - n->position.y));
 
-		if(len - 2 * n->radius > 0)
+		if(len - 2 * s->radius * t > 0)
 		{
 			n->position.x += (other.x - n->position.x) * dt * s->velocity / len;
 			n->position.y += (other.y - n->position.y) * dt * s->velocity / len;
 		}
 
 		other = n->position;
+		n++;
 
-		n = n->next;
+		t -= 1./s->body.length;
 	}
 
+	return 0;
+}
+
+int snake_dinit(entity_t *e)
+{
+	snake_t *s = (snake_t *)e;
+	array_destroy(&s->body);
 	return 0;
 }
