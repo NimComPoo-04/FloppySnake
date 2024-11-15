@@ -25,7 +25,7 @@ int check_food_collision(Vector2 snake_head, float snake_radius, int *score) {
             float dist = Vector2Distance(snake_head, food_list[i].position);
             if (dist <= snake_radius) { // Collision detected
                 // Deactivate the food item and respawn at a new position
-                food_list[i].position = (Vector2){ GetRandomValue(head->x-50, head->x+50), GetRandomValue(head->y-50, head->y+50) };
+                food_list[i].position = (Vector2){ GetRandomValue(head->x-(GetScreenWidth()/2), head->x+(GetScreenWidth()/2)), GetRandomValue(head->y-(GetScreenWidth()/2), head->y+(GetScreenWidth()/2)) };
                 food_list[i].active = false; // Food is eaten, deactivate it
                 (*score)++; // Increase the score
                 return 1; // Collision occurred
