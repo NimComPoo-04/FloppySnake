@@ -12,22 +12,25 @@
 food_t food_list[FOOD_COUNT]; 
 
 // food positions 
-int food_init(entity *e) {
-    for (int i = 0; i < FOOD_COUNT; i++) {
-        food_list[i].center = (Vector2){ GetRandomValue(0, GetScreenWidth()), GetRandomValue(0, GetScreenHeight()) };
-        food_list[i].start = CARMINE;
-        food_list[i].end = CRIMSON;
-        food_list[i].radius=3;
-        food_list[i].entity.alive=1;
-    }
+/*int food_init(entity_t *e) {
+    food_t *food = (food_t *)e;
+    food->center = (Vector2){ GetRandomValue(0, GetScreenWidth()), GetRandomValue(0, GetScreenHeight()) };
+    food->radius = 5.0f;  // Food radius
+    food->start = GREEN;
+    food->end = DARKGREEN;
+    food->entity.alive = 1;  // Mark as active
     return 0;
+}*/
+
+float VecDistance(Vector2 v1, Vector2 v2) {
+    return sqrtf((v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y));
 }
 
 // Check for collision 
 int check_food_collision(Vector2 snake_head, float snake_radius, int *score) {
     for (int i = 0; i < FOOD_COUNT; i++) {
         if (food_list[i].entity.alive) {
-            float dist = Vector2Distance(snake_head, food_list[i].center);
+            float dist = VecDistance(snake_head, food_list[i].center);
             if (dist <= snake_radius) { // Collision detected
                 // Deactivate the food item and respawn at a new position
                 food_list[i].center = (Vector2){ GetRandomValue(snake_head.x-(GetScreenWidth()/2), snake_head.x+(GetScreenWidth()/2)), GetRandomValue(snake_head.y-(GetScreenWidth()/2), snake_head.y+(GetScreenWidth()/2)) };
@@ -41,11 +44,10 @@ int check_food_collision(Vector2 snake_head, float snake_radius, int *score) {
 }
 
 // Draw food 
-void draw_food(entity_t *e) {
-    for (int i = 0; i < FOOD_COUNT; i++) {
-        if (food_list[i].entity.alive) {
-            DrawCircleV(food_list[i].center, 5, GREEN); // Draw food as a small green circle
-        }
-    }
+/*int food_draw(entity_t *e) {
+    food_t *food = (food_t *)e;
+    if (!food->entity.alive) return 0;  // Skip inactive food
+        DrawCircleV(food->center, 5, GREEN); 
     return 0;
-}
+}*/
+
