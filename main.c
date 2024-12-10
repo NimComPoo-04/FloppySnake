@@ -14,7 +14,7 @@
 #define ASPECT_RATIO 9 / 16
 
 #define FOOD_COUNT 40
-static food_t f[FOOD_COUNT] = {0};
+
 
 snake_t snake = {
 	.entity = {
@@ -35,22 +35,23 @@ int main(void)
 {
 	entity_list_create(&ent);
 
-	SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
-	InitWindow(0, 0, "...");
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+	SetTargetFPS(60);
+	InitWindow(800, 600, "...");
 	InitAudioDevice();
 
-	for(int i = 0; i < FOOD_COUNT; i++)
-	{
-		f[i].entity.init = food_init;
-		f[i].entity.update = food_update;
-		f[i].entity.draw= food_draw;
-
-		f[i].radius = GetRandomValue(20, 40);
-
-		entity_list_register(&ent, &f[i].entity);
-	}
-
+	
 	entity_list_register(&ent, &snake.entity);
+
+	for (int i = 0; i < FOOD_COUNT; i++) {
+    f[i].entity.init = food_init;   // Assign initialization function
+    f[i].entity.update = food_update; // Assign update function
+    f[i].entity.draw = food_draw;  // Assign draw function
+
+    f[i].radius = GetRandomValue(20, 40);  // Set random radius for each food
+
+    entity_list_register(&ent, &f[i].entity);  // Register each food entity
+}
 
 	float t = 0;
 	Color current = {0};
@@ -91,7 +92,9 @@ int main(void)
 			target.b = GetRandomValue(0, 128/2);
 			t = 0;
 		}
+		
 
+	
 		entity_list_draw(&ent);
 		particle_list_draw(&p);
 
