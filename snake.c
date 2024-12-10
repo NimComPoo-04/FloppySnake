@@ -1,8 +1,10 @@
 #include <raylib.h>
 #include <math.h>
-
+#include <stdio.h>
 #include "snake.h"
+#include "food.h"
 
+extern food_t f[40];  
 int snake_init(entity_t *e)
 {
 	snake_t *s = (snake_t *)e;
@@ -66,7 +68,26 @@ int snake_update(entity_t *e)
 	//
 
 	static int not_added = 1;
-	if(IsKeyDown(KEY_SPACE) && not_added)
+	if (check_food_collision(((snake_node_t *)s->body.data)->position, s->radius)) {
+        
+		if (not_added) {
+            snake_node_t *tail = (snake_node_t *)s->body.data + s->body.length - 1;
+
+
+            snake_node_t new_segment = {
+                .position = tail->position
+            };
+
+            // Insert the new segment into the snake's body
+            array_insert(&s->body, &new_segment);
+            not_added = 0; 
+        }
+    } else {
+		fprintf(stderr,"%d %s /n", __LINE__, __func__);
+        not_added = 1; // Reset if no collision
+    }
+
+	/*if(IsKeyDown(KEY_SPACE) && not_added)
 	{
 		snake_node_t tmp = *((snake_node_t *)s->body.data + s->body.length - 1);
 		array_insert(&s->body, &tmp);
@@ -75,7 +96,7 @@ int snake_update(entity_t *e)
 	else if(IsKeyUp(KEY_SPACE))
 	{
 		not_added = 1;
-	}
+	}*/
 
 	snake_node_t *n = (snake_node_t *)s->body.data;
 
